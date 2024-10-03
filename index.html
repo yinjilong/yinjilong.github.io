@@ -4,39 +4,113 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
+    />
+    <style>
+      .btn-disabled {
+        background-color: gray;
+        color: white; /* or another contrasting color */
+        cursor: not-allowed; /* Optional: show the user it's disabled */
+      }
+      .image-container {
+        overflow: hidden; /* Hide overflowing images */
+        width: 100%; /* Container width */
+      }
+
+      .scroll-wrapper {
+        display: flex;
+        animation: scroll 10s linear infinite; /* Continuous loop */
+      }
+
+      .scroll-wrapper img {
+        width: 100px; /* Image width */
+        margin-right: 10px; /* Spacing between images */
+      }
+
+      /* Keyframes for infinite scrolling effect */
+      @keyframes scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="app" class="container">
-      <h2>
-        <span>Pomodoro</span>
-        <button @click="start()">
-            <i class="glyphicon glyphicon-play"></i>
+      <h3>{{title}}</h3>
+      <div>
+        <button
+          type="button"
+          class="btn btn-default"
+          title="Speedupx2"
+          v-on:click="speedUp()"
+        >
+          <i class="glyphicon glyphicon-circle-arrow-up">x2</i>
         </button>
-        <button @click="pause()">
-            <i class="glyphicon glyphicon-pause"></i>
-        </button>        
-        <button @click="stop()">
-            <i class="glyphicon glyphicon-stop"></i>
-        </button>                
-      </h2>
-      <h3>
-        <em>{{title}}</em> 
-      </h3>
-      <div class="well">
-        <div class="pomodoro-timer">
-            {{mins}}</span>:<span>{{secs}}</span>
+        <button
+          type="button"
+          class="btn btn-default"
+          title="Speeddown÷2"
+          v-on:click="speedDown()"
+        >
+          <i class="glyphicon glyphicon-circle-arrow-down">÷２</i>
+        </button>
+
+        <button
+          title="Start"
+          v-on:click="startTimer()"
+          :disabled="!timerStartEnabled"
+          :class="{'btn-disabled': !timerStartEnabled}"
+        >
+          <i class="glyphicon glyphicon-play">Start</i>
+        </button>
+        <button
+          title="Pause"
+          v-on:click="pauseTimer()"
+          :disabled="!timerPauseEnabled"
+          :class="{'btn-disabled': !timerPauseEnabled}"
+        >
+          <i class="glyphicon glyphicon-pause">Pause</i>
+        </button>
+        <button
+          title="Stop"
+          v-on:click="stopTimer()"
+          :disabled="!timerStopEnabled"
+          :class="{'btn-disabled': !timerStopEnabled}"
+        >
+          <i class="glyphicon glyphicon-stop">Stop</i>
+        </button>
+      </div>
+      <br />
+      <span>{{timer_status}}</span>
+      <span>{{timerMinutes}}:{{timerSeconds}}</span>
+      <div class="progress">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          :style="{ width: timerPercent + '%' }"
+          :aria-valuenow="timerPercent"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {{timerPercent}}%
         </div>
       </div>
-      <div v-if="pomodoroState=='rest'">
-        {{cat_img_url}}
-        <img :src="catImageUrl" v-if="catImageUrl" alt="Cat Image" width="30%"/>
+
+      <div class="image-container" v-if="pomodoroState == 'rest'">
+        <div class="scroll-wrapper">
+          <img :src="imgUrl" alt="Cat Image" v-for="imgUrl in catImageUrl" />
+          <!-- Duplicate the images for smooth looping -->
+          <img :src="imgUrl" alt="Cat Image" v-for="imgUrl in catImageUrl" />
+        </div>
       </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js"></script>
-    <script src="script.js"></script>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.js"></script>
+  <script src="script.js"></script>
 </html>
